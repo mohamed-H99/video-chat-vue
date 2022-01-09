@@ -32,6 +32,14 @@ const routes = [
     },
   },
   {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+    meta: {
+      allowAnonymous: false,
+    },
+  },
+  {
     path: '/groups',
     name: 'Groups',
     component: () => import('../views/Groups.vue'),

@@ -14,16 +14,21 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav d-flex gap-2">
           <!-- auth -->
-          <template v-if="$store.state.user">
+          <template v-if="user">
             <li class="nav-item">
               <router-link class="btn btn-danger" to="/groups">Groups</router-link>
             </li>
-            <li class="nav-item ms-2">
-              <a href="#" class="btn btn-light" @click.prevent="logout" title="logout">
-                Logout <i class="fas fa-sign-out-alt ms-1"></i
-              ></a>
+            <li>
+              <router-link class="btn btn-light" title="Profile" to="/profile">
+                <i class="far fa-user"></i>
+              </router-link>
+            </li>
+            <li>
+              <button class="btn btn-light" title="Logout" @click.prevent="logout">
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
             </li>
           </template>
           <!-- guest -->
@@ -43,6 +48,12 @@
 
 <script>
 export default {
+  name: 'Navbar',
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
   methods: {
     logout() {
       this.$store.dispatch('logout');
