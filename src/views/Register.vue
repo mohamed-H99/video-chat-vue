@@ -1,0 +1,53 @@
+<template>
+  <section>
+    <div class="container">
+      <div class="card card-form">
+        <div class="card-header">
+          <h1>Create account</h1>
+        </div>
+        <div class="card-body">
+          <form @submit.prevent="$store.dispatch('register', formData)">
+            <div class="form-group mb-2">
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" class="form-control" v-model="formData.username" />
+            </div>
+            <div class="form-group mb-2">
+              <label for="email">Email address</label>
+              <input type="email" id="email" name="email" class="form-control" v-model="formData.email" />
+            </div>
+            <div class="form-group mb-2">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" class="form-control" v-model="formData.password" />
+            </div>
+            <div class="form-group mt-3">
+              <button type="submit" class="btn btn-danger">Register</button>
+              <span class="ms-2"> Already have an account? <router-link to="/login">Login</router-link> </span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'Register',
+  data() {
+    return {
+      formData: {
+        username: '',
+        email: '',
+        password: '',
+      },
+    };
+  },
+  destroyed() {
+    this.formData = {
+      username: '',
+      email: '',
+      password: '',
+    };
+  },
+};
+</script>
