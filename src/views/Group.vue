@@ -1,11 +1,11 @@
 <template>
-  <main role="main" id="main" class="py-4">
+  <section>
     <div class="container">
       <div class="row c-row">
         <div class="col-md-8">
           <header class="mb-3" v-if="activeGroup.iAmApproved">
             <button v-if="!$store.state.isJoined" class="btn btn-dark" @click="join">Join</button>
-            <button v-else class="btn btn-danger" @click="leave">Leave</button>
+            <button v-else class="btn btn-primary" @click="leave">Leave</button>
           </header>
           <vue-webrtc ref="webrtc" width="100%" :roomId="$route.params.groupID"></vue-webrtc>
         </div>
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-  </main>
+  </section>
 </template>
 
 <script>

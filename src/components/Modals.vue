@@ -8,7 +8,7 @@
           <input id="name" type="text" v-model="group.name" class="form-control" placeholder="" />
         </div>
         <div class="form-group mt-3">
-          <button type="submit" class="btn btn-danger me-2">Create</button>
+          <button type="submit" class="btn btn-primary me-2">Create</button>
           <button type="button" class="btn btn-light" @click="$bvModal.hide('modal-create')">Discard</button>
         </div>
       </form>
@@ -21,7 +21,7 @@
           <input id="id" type="text" v-model="group.id" class="form-control" placeholder="" />
         </div>
         <div class="form-group mt-3">
-          <button type="submit" class="btn btn-danger me-2">Join</button>
+          <button type="submit" class="btn btn-primary me-2">Join</button>
           <button type="button" class="btn btn-light" @click="$bvModal.hide('modal-join')">Discard</button>
         </div>
       </form>

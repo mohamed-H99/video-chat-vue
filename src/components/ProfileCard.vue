@@ -1,5 +1,5 @@
 <template>
-  <div class="card card-profile rounded-0">
+  <div class="card card-profile bg-dark text-white rounded-0">
     <div class="card-body p-4 pt-0">
       <figure class="d-flex mb-0 justify-content-center">
         <PuSkeleton v-if="$store.state.loading" width="110px" circle height="110px" class="avatar"></PuSkeleton>
@@ -13,30 +13,33 @@
         />
       </figure>
       <div class="card-content">
-        <PuSkeleton v-if="$store.state.loading" width="100%" class="h1 d-block text-center"></PuSkeleton>
-        <h1 v-else class="h1 text-center">{{ user.displayName || user.email }}</h1>
-
-        <PuSkeleton v-if="$store.state.loading" class="mb-1" height="24px" :count="2"></PuSkeleton>
-        <ul v-else class="list-unstyled mb-0 pt-1 d-flex flex-column gap-1">
-          <li class="row">
-            <div class="col-sm-3 d-flex align-items-center">
-              <span class="badge bg-dark w-100">Uid</span>
-            </div>
-            <div class="col">{{ user.uid }}</div>
-          </li>
-          <li class="row">
-            <div class="col-sm-3 d-flex align-items-center">
-              <span class="badge bg-dark w-100">Email</span>
-            </div>
-            <div class="col">{{ user.email }}</div>
-          </li>
-          <li class="row">
-            <div class="col-sm-3 d-flex align-items-center">
-              <span class="badge bg-dark w-100">Joined</span>
-            </div>
-            <div class="col">{{ new Date(user.metadata.creationTime) | date }}</div>
-          </li>
-        </ul>
+        <template v-if="$store.state.loading">
+          <PuSkeleton width="100%" class="h1 d-block text-center"></PuSkeleton>
+          <PuSkeleton class="mb-1" height="24px" :count="3"></PuSkeleton>
+        </template>
+        <template v-else>
+          <h1 class="h1 text-center">{{ user.displayName || user.email }}</h1>
+          <ul class="list-unstyled mb-0 pt-1 d-flex flex-column gap-1">
+            <li class="row">
+              <div class="col-sm-3 d-flex align-items-center">
+                <span class="badge bg-white text-dark w-100">Uid</span>
+              </div>
+              <div class="col">{{ user.uid }}</div>
+            </li>
+            <li class="row">
+              <div class="col-sm-3 d-flex align-items-center">
+                <span class="badge bg-white text-dark w-100">Email</span>
+              </div>
+              <div class="col">{{ user.email }}</div>
+            </li>
+            <li class="row">
+              <div class="col-sm-3 d-flex align-items-center">
+                <span class="badge bg-white text-dark w-100">Joined</span>
+              </div>
+              <div class="col" v-if="user.metadata">{{ new Date(user.metadata.creationTime) | date }}</div>
+            </li>
+          </ul>
+        </template>
       </div>
     </div>
   </div>
@@ -44,7 +47,6 @@
 
 <script>
 import { createDateFilter } from 'vue-date-fns';
-
 export default {
   name: 'Profile',
   filters: {

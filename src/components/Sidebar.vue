@@ -23,7 +23,7 @@
           <div class="col-sm-3">Host/s</div>
           <div class="col">
             <PuSkeleton v-if="!groupInfo.hosts" width="150px" height="20px"></PuSkeleton>
-            <span v-else class="badge bg-danger" v-for="host in groupInfo.hosts" :key="host.uid">
+            <span v-else class="badge bg-primary" v-for="host in groupInfo.hosts" :key="host.uid">
               {{ host.displayName || host.email }}
             </span>
           </div>

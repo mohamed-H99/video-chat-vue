@@ -10,7 +10,7 @@
         @input="e => $store.dispatch('searchGroups', e.target.value)"
         class="form-control"
       />
-      <button class="btn btn-danger" v-b-tooltip title="Create group" v-b-modal="'modal-create'">Create</button>
+      <button class="btn btn-primary" v-b-tooltip title="Create group" v-b-modal="'modal-create'">Create</button>
       <button class="btn btn-dark" v-b-tooltip title="Join group by ID" v-b-modal="'modal-join'">Join</button>
     </div>
   </header>

@@ -1,18 +1,16 @@
 <template>
-  <form @submit.prevent="$store.dispatch('login', formData)">
-    <div class="form-group mb-2">
-      <label for="email">Email address</label>
-      <input type="email" id="email" name="email" class="form-control" v-model="formData.email" />
-    </div>
-    <div class="form-group mb-2">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" class="form-control" v-model="formData.password" />
-    </div>
-    <div class="form-group mt-3 d-flex justify-content-start align-items-center">
-      <button type="submit" class="btn btn-danger">Login</button>
+  <b-form @submit.prevent="$store.dispatch('login', formData)" class="d-flex flex-column gap-2">
+    <b-form-group label="Email address" label-for="email">
+      <b-form-input type="email" id="email" name="email" v-model="formData.email" />
+    </b-form-group>
+    <b-form-group label="Password" label-for="password">
+      <b-form-input type="password" id="password" name="password" v-model="formData.password" />
+    </b-form-group>
+    <b-form-group class="mt-2 d-flex justify-content-start align-items-center">
+      <b-button variant="primary" type="submit">Login</b-button>
       <span class="ms-2 text-muted"> Don't have an account? <router-link to="/register">Register</router-link> </span>
-    </div>
-  </form>
+    </b-form-group>
+  </b-form>
 </template>
 
 <script>

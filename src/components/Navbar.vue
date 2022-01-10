@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-sm navbar-dark bg-danger">
+  <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
     <div class="container">
       <router-link class="navbar-brand fw-bold" aria-current="page" aria-label="logo" to="/">VideoChat</router-link>
       <button
@@ -18,7 +18,7 @@
           <!-- auth -->
           <template v-if="user">
             <li class="nav-item">
-              <router-link class="btn btn-danger" to="/groups">Groups</router-link>
+              <router-link class="btn btn-primary" to="/groups">Groups</router-link>
             </li>
             <li>
               <router-link class="btn btn-light" v-b-tooltip title="Profile" to="/profile">
@@ -34,7 +34,7 @@
           <!-- guest -->
           <template v-else>
             <li class="nav-item">
-              <router-link class="btn btn-danger" to="/login">Login</router-link>
+              <router-link class="btn btn-primary" to="/login">Login</router-link>
             </li>
             <li class="nav-item ms-2">
               <router-link class="btn btn-light" to="/register">Join Us</router-link>

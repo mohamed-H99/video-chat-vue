@@ -11,7 +11,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     user: null,
-    loading: false,
+    loading: true,
     isJoined: false,
     groups: [],
     filteredGroups: [],
@@ -135,7 +135,7 @@ export default new Vuex.Store({
       try {
         const groupRef = doc(db, 'groups', groupID);
         const groupDoc = await getDoc(groupRef);
-        if (!groupDoc.exists()) return Vue.$toast.error('Group is not exist');
+        if (!groupDoc.exists()) return Vue.$toast.error('Group not exists');
         const iAmHost = groupDoc.data().hosts.find(host => host.uid === state.user.uid);
         if (!iAmHost) return Vue.$toast.error('Permission denied');
         await deleteDoc(groupRef);
@@ -153,8 +153,7 @@ export default new Vuex.Store({
         const groupRef = doc(db, 'groups', groupID);
         const groupDoc = await getDoc(groupRef);
         if (!groupDoc.exists()) {
-          Vue.$toast.error('Group is not found');
-          return router.push('/');
+          return router.currentRoute.name === 'Group' ? router.push('/') : Vue.$toast.error('Group is not found');
         }
         const iAmHost = groupDoc.data().hosts.find(host => host.uid === state.user.uid);
         if (!iAmHost) return dispatch('addUserToGroup', groupDoc);

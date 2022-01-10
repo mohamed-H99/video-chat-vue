@@ -1,5 +1,5 @@
 <template>
-  <main role="main" id="main" class="py-4">
+  <section>
     <div class="container">
       <div class="card card-form">
         <div class="card-header">
@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-  </main>
+  </section>
 </template>
 
 <script>

@@ -1,9 +1,9 @@
 <template>
-  <main role="main" id="main" class="py-4">
-    <div class="container mt-4 d-flex flex-column align-items-center">
+  <section>
+    <div class="container mt-5 d-flex flex-column align-items-center">
       <ProfileCard />
     </div>
-  </main>
+  </section>
 </template>
 
 <script>
