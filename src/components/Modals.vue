@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- create modal -->
-    <b-modal id="modal-create" title="Create new Group" hide-footer>
+    <b-modal id="modal-create" v-b-tooltip title="Create new Group" hide-footer>
       <form @submit.prevent="create">
         <div class="form-group">
           <label for="name">Group name</label>
@@ -14,7 +14,7 @@
       </form>
     </b-modal>
     <!-- join modal -->
-    <b-modal id="modal-join" title="Join group by ID" hide-footer>
+    <b-modal id="modal-join" v-b-tooltip title="Join group by ID" hide-footer>
       <form @submit.prevent="join">
         <div class="form-group">
           <label for="id">Group-ID</label>

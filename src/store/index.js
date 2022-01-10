@@ -44,9 +44,9 @@ export default new Vuex.Store({
     async login({ commit }, { email, password }) {
       commit('setLoading', true);
       try {
-        const res = await signInWithEmailAndPassword(auth, email, password);
-        BrowserStorage.set('token', res.user.accessToken);
-        commit('setUser', res.user);
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        BrowserStorage.set('token', cred.user.accessToken);
+        commit('setUser', cred.user);
         Vue.$toast.success('Logged in Successfully!');
       } catch (err) {
         Vue.$toast.error(err.message);
@@ -58,8 +58,8 @@ export default new Vuex.Store({
     async register({ commit }, { username, email, password }) {
       commit('setLoading', true);
       try {
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        BrowserStorage.set('token', res.user.accessToken);
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        BrowserStorage.set('token', cred.user.accessToken);
         await updateProfile(auth.currentUser, {
           displayName: username,
         });
@@ -91,12 +91,22 @@ export default new Vuex.Store({
         const groupsRef = collection(db, 'groups');
         await setDoc(doc(groupsRef), {
           name: name,
-          host: {
-            uid,
-            displayName,
-            email,
-          },
-          attendees: [],
+          hosts: [
+            {
+              uid,
+              displayName,
+              email,
+            },
+          ],
+          attendees: [
+            {
+              uid,
+              displayName,
+              email,
+              status: 'approved',
+              isHost: true,
+            },
+          ],
           createdAt: Timestamp.fromDate(new Date()),
         });
       } catch (err) {
@@ -120,10 +130,14 @@ export default new Vuex.Store({
       commit('setLoading', false);
     },
     // remove group
-    async removeGroup({ commit }, groupID) {
+    async removeGroup({ state, commit }, groupID) {
       commit('setLoading', true);
       try {
         const groupRef = doc(db, 'groups', groupID);
+        const groupDoc = await getDoc(groupRef);
+        if (!groupDoc.exists()) return Vue.$toast.error('Group is not exist');
+        const iAmHost = groupDoc.data().hosts.find(host => host.uid === state.user.uid);
+        if (!iAmHost) return Vue.$toast.error('Permission denied');
         await deleteDoc(groupRef);
         Vue.$toast.success('Group removed successfully!');
       } catch (err) {
@@ -137,17 +151,17 @@ export default new Vuex.Store({
       commit('setLoading', true);
       try {
         const groupRef = doc(db, 'groups', groupID);
-        const res = await getDoc(groupRef);
-        if (!res.exists()) {
-          router.push('/groups');
-          return;
+        const groupDoc = await getDoc(groupRef);
+        if (!groupDoc.exists()) {
+          Vue.$toast.error('Group is not found');
+          return router.push('/');
         }
-        const iAmHost = state.user.uid === res.data().host.uid ? true : false;
-        if (!iAmHost) await dispatch('addUserToGroup', res);
+        const iAmHost = groupDoc.data().hosts.find(host => host.uid === state.user.uid);
+        if (!iAmHost) return dispatch('addUserToGroup', groupDoc);
         commit('setActiveGroup', {
-          ...res.data(),
-          id: res.id,
-          iAmHost,
+          ...groupDoc.data(),
+          id: groupDoc.id,
+          iAmHost: iAmHost ? true : false,
         });
       } catch (err) {
         Vue.$toast.error(err.message);
@@ -160,20 +174,15 @@ export default new Vuex.Store({
       commit('setLoading', true);
       try {
         const groupRef = doc(db, 'groups', groupID);
-        const res = await getDoc(groupRef);
-        if (!res.exists()) {
-          router.push('/groups');
-          return;
-        }
-        const iAmHost = state.user.uid === res.data().host.uid ? true : false;
+        const groupDoc = await getDoc(groupRef);
+        if (!groupDoc.exists()) return router.push('/groups');
+        const iAmHost = groupDoc.data().hosts.find(host => host.uid === state.user.uid);
         commit('setActiveGroup', {});
-        if (iAmHost) await dispatch('removeGroup', groupID);
-        else {
-          const newAttendees = res.data().attendees.filter(att => att.uid !== state.user.uid);
-          await updateDoc(groupRef, {
-            attendees: [...newAttendees],
-          });
-        }
+        if (iAmHost) return dispatch('removeGroup', groupID);
+        const newAttendees = groupDoc.data().attendees.filter(att => att.uid !== state.user.uid);
+        await updateDoc(groupRef, {
+          attendees: [...newAttendees],
+        });
       } catch (err) {
         Vue.$toast.error(err.message);
       } finally {
@@ -184,25 +193,51 @@ export default new Vuex.Store({
       commit('setLoading', true);
       try {
         const groupRef = doc(db, 'groups', groupDoc.id);
-        const groupData = groupDoc.data();
-        const iAmIn = groupData.attendees?.find(att => att.uid === state.user.uid);
-        if (!iAmIn) {
-          const { uid, displayName, email } = state.user;
-          await updateDoc(groupRef, {
-            attendees: [
-              ...groupData.attendees,
-              {
-                uid,
-                displayName,
-                email,
-                approved: false,
-              },
-            ],
-          });
-          Vue.$toast.success('User added to attendees!');
-        }
+        const iAmIn = groupDoc.data().attendees?.find(att => att.uid === state.user.uid);
+        if (iAmIn) return Vue.$toast.error('User already exists');
+        const { uid, displayName, email } = state.user;
+        await updateDoc(groupRef, {
+          attendees: [
+            ...groupDoc.data().attendees,
+            {
+              uid,
+              displayName,
+              email,
+              status: 'pending',
+              // isHost: false,
+            },
+          ],
+        });
+        commit('setActiveGroup', {
+          ...groupDoc.data(),
+          id: groupDoc.id,
+          iAmHost: iAmHost ? true : false,
+        });
+        Vue.$toast.success('User added to Group');
+        this.dispatch('getGroup', groupDoc.id);
       } catch (err) {
-        console.log('add to active error');
+        Vue.$toast.error(err.message);
+      } finally {
+        commit('setLoading', false);
+      }
+    },
+    // change user status
+    async setUserStatus({ state, commit }, { groupID, uid, status }) {
+      commit('setLoading', true);
+      try {
+        const groupRef = doc(db, 'groups', groupID);
+        const groupDoc = await getDoc(groupRef);
+        if (!groupDoc.exists()) return Vue.$toast.error('Group is not exist!');
+        if (groupDoc.data().host.uid !== state.user.uid) return Vue.$toast.error('Permission denied');
+        const newAttendees = groupDoc.data().attendees.map(att => {
+          if (att.uid === uid) att.status = status;
+          return att;
+        });
+        await updateDoc(groupRef, {
+          attendees: [...newAttendees],
+        });
+        Vue.$toast.success("User's status changed");
+      } catch (err) {
         Vue.$toast.error(err.message);
       } finally {
         commit('setLoading', false);
@@ -211,7 +246,7 @@ export default new Vuex.Store({
     copyToClipboard(context, txt) {
       if (!navigator) return;
       navigator.clipboard.writeText(txt);
-      Vue.$toast('Copied');
+      Vue.$toast.success('Copied');
     },
   },
 });

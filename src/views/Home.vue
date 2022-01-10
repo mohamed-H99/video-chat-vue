@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <main role="main" id="main" class="py-4">
     <div class="container">
       <h1>
         Hello,
@@ -17,7 +17,7 @@
         <router-link to="/login" class="btn btn-danger">Login</router-link>
       </template>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>

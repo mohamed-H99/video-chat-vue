@@ -1,19 +1,31 @@
 <template>
-  <div class="card border-1">
-    <div class="card-body d-flex align-items-center justify-content-between">
+  <b-list-group-item class="ps-2">
+    <div class="d-flex align-items-center justify-content-between">
       <figure class="mb-0 d-flex gap-2 align-items-center">
-        <i class="fas fa-users me-2"></i>
         <router-link :to="`/groups/${data.id}`" class="mb-0">
-          {{ data.name }}
+          <img
+            class="me-2 c-rounded"
+            width="50"
+            height="50"
+            :src="data.photoURL || 'https://loremflickr.com/110/110'"
+            :alt="data.name"
+          />
+          <span>{{ data.name }}</span>
         </router-link>
       </figure>
       <b-button-group>
-        <button class="btn btn-light border" title="Copy group-ID" @click="$store.dispatch('copyToClipboard', data.id)">
+        <button
+          class="btn btn-light border"
+          v-b-tooltip
+          title="Copy group-ID"
+          @click="$store.dispatch('copyToClipboard', data.id)"
+        >
           <i class="fas fa-copy"></i>
         </button>
         <button
-          v-if="data.iAmIn"
+          v-if="data.iAmIn && !data.iAmHost"
           class="btn btn-light border"
+          v-b-tooltip
           title="Leave group"
           @click="$store.dispatch('leaveGroup', data.id)"
         >
@@ -23,13 +35,14 @@
           v-if="data.iAmHost"
           @click="$store.dispatch('removeGroup', data.id)"
           class="btn btn-light border"
+          v-b-tooltip
           title="Delete group"
         >
           <i class="fas fa-trash-alt"></i>
         </button>
       </b-button-group>
     </div>
-  </div>
+  </b-list-group-item>
 </template>
 
 <script>

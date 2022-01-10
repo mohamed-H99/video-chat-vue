@@ -72,7 +72,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (!to.meta.allowAnonymous && !BrowserStorage.get('token')) {
-    console.log('redirect');
     next({
       path: '/login',
       query: { redirect: to.fullPath },

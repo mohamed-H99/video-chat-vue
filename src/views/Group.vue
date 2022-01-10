@@ -1,9 +1,9 @@
 <template>
-  <section>
+  <main role="main" id="main" class="py-4">
     <div class="container">
       <div class="row c-row">
         <div class="col-md-8">
-          <header class="mb-3">
+          <header class="mb-3" v-if="activeGroup.iAmApproved">
             <button v-if="!$store.state.isJoined" class="btn btn-dark" @click="join">Join</button>
             <button v-else class="btn btn-danger" @click="leave">Leave</button>
           </header>
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </main>
 </template>
 
 <script>

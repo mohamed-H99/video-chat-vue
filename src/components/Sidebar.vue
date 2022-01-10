@@ -4,7 +4,7 @@
     <ul class="list-unstyled list">
       <li>
         <div class="row">
-          <div class="col-sm-2">ID</div>
+          <div class="col-sm-3">Group-ID</div>
           <div class="col">
             <PuSkeleton width="200px" height="20px">{{ groupInfo.id }}</PuSkeleton>
           </div>
@@ -12,7 +12,7 @@
       </li>
       <li>
         <div class="row">
-          <div class="col-sm-2">Name</div>
+          <div class="col-sm-3">Name</div>
           <div class="col">
             <PuSkeleton width="100px" height="20px">{{ groupInfo.name }}</PuSkeleton>
           </div>
@@ -20,32 +20,32 @@
       </li>
       <li>
         <div class="row">
-          <div class="col-sm-2">Host</div>
+          <div class="col-sm-3">Host/s</div>
           <div class="col">
-            <PuSkeleton width="150px" height="20px">
-              {{ groupInfo.host && groupInfo.host.displayName }}
-            </PuSkeleton>
+            <PuSkeleton v-if="!groupInfo.hosts" width="150px" height="20px"></PuSkeleton>
+            <span v-else class="badge bg-danger" v-for="host in groupInfo.hosts" :key="host.uid">
+              {{ host.displayName || host.email }}
+            </span>
           </div>
         </div>
       </li>
       <hr />
       <li>
-        <PuSkeleton v-if="$store.state.loading" height="20px" width="100%"></PuSkeleton>
-        <PuSkeleton v-if="$store.state.loading" height="20px" width="150px" :count="3"></PuSkeleton>
+        <PuSkeleton v-if="$store.state.loading" height="24px" width="100%"></PuSkeleton>
+        <PuSkeleton
+          v-if="$store.state.loading"
+          class="d-block mt-2"
+          height="42px"
+          width="100%"
+          :count="5"
+        ></PuSkeleton>
         <div v-else class="row">
           <div class="col-sm-12 d-flex justify-content-between align-items-center">
             <strong>Attendee/s</strong>
-            <span class="badge bg-dark">{{ groupInfo.attendees && groupInfo.attendees.length }}</span>
+            <span class="badge bg-dark">{{ groupInfo.attendees && groupInfo.attendees.length + 1 }}</span>
           </div>
-          <div class="col items">
-            <span
-              class="badge bg-dark"
-              v-for="(att, idx) in groupInfo.attendees"
-              :key="att.uid || idx"
-              :class="{ 'bg-danger': att.isHost }"
-            >
-              {{ att.displayName }}
-            </span>
+          <div class="col">
+            <AttendeesList />
           </div>
         </div>
       </li>
@@ -54,14 +54,19 @@
 </template>
 
 <script>
+import AttendeesList from '@/components/AttendeesList';
+
 export default {
   name: 'Sidebar',
+  components: {
+    AttendeesList,
+  },
   computed: {
     groupInfo() {
       return this.$store.state.activeGroup;
     },
   },
-  created() {
+  mounted() {
     this.$store.dispatch('getGroup', this.$route.params.groupID);
   },
 };
@@ -73,10 +78,9 @@ export default {
   flex-direction: column;
   gap: 0.25rem;
 }
-.items {
-  margin-top: 0.25rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
+.group-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
 }
 </style>

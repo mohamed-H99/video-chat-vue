@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-sm navbar-dark bg-danger">
     <div class="container">
-      <router-link class="navbar-brand fw-bold" aria-current="page" to="/">VideoChat</router-link>
+      <router-link class="navbar-brand fw-bold" aria-current="page" aria-label="logo" to="/">VideoChat</router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -14,19 +14,19 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav d-flex gap-2">
+        <ul class="navbar-nav d-flex gap-1">
           <!-- auth -->
           <template v-if="user">
             <li class="nav-item">
               <router-link class="btn btn-danger" to="/groups">Groups</router-link>
             </li>
             <li>
-              <router-link class="btn btn-light" title="Profile" to="/profile">
+              <router-link class="btn btn-light" v-b-tooltip title="Profile" to="/profile">
                 <i class="far fa-user"></i>
               </router-link>
             </li>
             <li>
-              <button class="btn btn-light" title="Logout" @click.prevent="logout">
+              <button class="btn btn-light" v-b-tooltip title="Logout" @click.prevent="logout">
                 <i class="fas fa-sign-out-alt"></i>
               </button>
             </li>
